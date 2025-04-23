@@ -41,13 +41,14 @@ if (!empty($_FILES['attachment']['name'][0])) {
     }
 
     $pdo = new PDO("mysql:host=localhost;dbname=YOUR_DB;charset=utf8", "USERNAME", "PASSWORD");
-    foreach ($_FILES['attachment']['name'] as $key => $originalName) {
+    foreach ($_FILES['attachment']['tmp_name'] as $key => $tmpName) {
         if ($_FILES['attachment']['error'][$key] == 0) {
+            $originalName = $_FILES['attachment']['name'][$key];
             $extension = pathinfo($originalName, PATHINFO_EXTENSION);
             $uniqueName = uniqid('file_', true) . '.' . $extension;
             $targetFile = $uploadDir . $uniqueName;
 
-            if (move_uploaded_file($_FILES['attachment']['tmp_name'][$key], $targetFile)) {
+            if (move_uploaded_file($tmpName, $targetFile)) {
                 $stmt = $pdo->prepare("INSERT INTO sale_invoice_attachments (invoice_id, original_name, unique_name) VALUES (?, ?, ?)");
                 $stmt->execute([$invoice_id, $originalName, $uniqueName]);
             }
