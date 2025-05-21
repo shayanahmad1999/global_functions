@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Custom Autocomplete (Dark Theme)</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .autocomplete-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .autocomplete-wrapper i {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none;
+    }
+
+    input.autocomplete-input {
+      width: 100%;
+      padding: 12px 12px 12px 40px;
+      background-color: #1e1e1e;
+      border: 2px solid #333;
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input.autocomplete-input:focus {
+      border-color: #64b5f6;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(100, 181, 246, 0.3);
+    }
+
+    .autocomplete-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .autocomplete-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .autocomplete-item:hover,
+    .autocomplete-item.active {
+      background-color: #333;
+    }
+
+    .autocomplete-item i {
+      margin-right: 8px;
+    }
+
+    @media (max-width: 500px) {
+      input.autocomplete-input {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="autocomplete-wrapper">
+    <i class="fas fa-city"></i>
+    <input
+      type="text"
+      class="autocomplete-input"
+      id="cityInput"
+      placeholder="Search for a city..."
+      autocomplete="off"
+    >
+    <div class="autocomplete-list" id="autocompleteList"></div>
+  </div>
+
+  <script>
+    const input = document.getElementById('cityInput');
+    const list = document.getElementById('autocompleteList');
+
+    // Sample: You can replace this with API calls
+    const fetchCities = async (query) => {
+      const cities = [
+        "New York", "London", "Los Angeles", "Paris", "Tokyo",
+        "Toronto", "Berlin", "Dubai", "Singapore", "Barcelona",
+        "Rome", "Amsterdam", "Bangkok", "Istanbul", "Sydney"
+      ];
+      return cities.filter(city =>
+        city.toLowerCase().startsWith(query.toLowerCase())
+      );
+    };
+
+    let activeIndex = -1;
+
+    input.addEventListener('input', async () => {
+      const query = input.value.trim();
+      list.innerHTML = '';
+      activeIndex = -1;
+
+      if (!query) return;
+
+      const results = await fetchCities(query);
+
+      results.forEach((city, index) => {
+        const item = document.createElement('div');
+        item.classList.add('autocomplete-item');
+        item.innerHTML = `<i class="fas fa-location-dot"></i> ${city}`;
+        item.addEventListener('click', () => {
+          input.value = city;
+          list.innerHTML = '';
+        });
+        list.appendChild(item);
+      });
+    });
+
+    input.addEventListener('keydown', (e) => {
+      const items = list.querySelectorAll('.autocomplete-item');
+      if (!items.length) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (activeIndex < items.length - 1) {
+          activeIndex++;
+          updateActive(items);
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (activeIndex > 0) {
+          activeIndex--;
+          updateActive(items);
+        }
+      } else if (e.key === 'Enter') {
+        if (activeIndex >= 0) {
+          items[activeIndex].click();
+        }
+      }
+    });
+
+    function updateActive(items) {
+      items.forEach((item, i) => {
+        item.classList.toggle('active', i === activeIndex);
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.autocomplete-wrapper')) {
+        list.innerHTML = '';
+      }
+    });
+  </script>
+
+</body>
+</html>

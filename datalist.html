@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Datalist Autocomplete with Style</title>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      padding: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .autocomplete-container {
+      position: relative;
+      width: 300px;
+    }
+
+    .autocomplete-container i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none;
+    }
+
+    input[list] {
+      width: 100%;
+      padding: 10px 10px 10px 36px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    input[list]:focus {
+      outline: none;
+      border-color: #4a90e2;
+      box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.2);
+    }
+
+    datalist option {
+      font-size: 14px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div>
+    <h2><i class="fas fa-magic"></i> Beautiful Autocomplete</h2>
+    <div class="autocomplete-container">
+      <i class="fas fa-location-dot"></i>
+      <input list="cities" name="city" id="city" placeholder="Select a city...">
+      <datalist id="cities">
+        <option value="New York">
+        <option value="London">
+        <option value="Paris">
+        <option value="Tokyo">
+        <option value="Berlin">
+      </datalist>
+    </div>
+  </div>
+
+</body>
+</html>
